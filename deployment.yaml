@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: Hoto
+  labels:
+    app: hoto
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: hoto
+  template:
+    metadata:
+      labels:
+        app: hoto
+    spec:
+      containers:
+      - name: Hoto
+        image: spanda/Hoto
+        ports:
+        - containerPort: 4000
+      restartPolicy: Always
