@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: Hoto
+  name: hoto
   labels:
     app: hoto
 spec:
@@ -20,8 +20,25 @@ spec:
         app: hoto
     spec:
       containers:
-      - name: Hoto
-        image: spanda/Hoto
+      - name: hoto
+        image: spanda/hoto
         ports:
         - containerPort: 4000
+          protocol: TCP
       restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hoto
+  labels:
+    app: hoto
+spec:
+  type: NodePort
+  ports:
+    - port: 4000
+      protocol: TCP
+      name: http
+      targetPort: 4000
+  selector:
+    app: hoto
