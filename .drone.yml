@@ -1,0 +1,9 @@
+pipeline:
+  build:
+    image: plugins/docker
+    repo: spanda/hoto
+    tags:
+      - 0.1.0
+      - latest
+
+branches: master
