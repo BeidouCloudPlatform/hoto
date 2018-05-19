@@ -1,7 +1,8 @@
 pipeline:
-  build:
+  docker:
     image: plugins/docker
     repo: spanda/hoto
+    secrets: [ docker_username, docker_password ]
     tags:
       - 0.1.0
       - latest
