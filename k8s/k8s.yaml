@@ -67,7 +67,7 @@ spec:
         - name: app
           env: []
           image: 'spanda/hoto'
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 4000
               protocol: TCP
@@ -79,7 +79,7 @@ metadata:
   labels:
     name: hoto-app
     app: hoto-spanda
-    namespace: hoto
+  namespace: hoto
 spec:
   ports:
     - name: app
