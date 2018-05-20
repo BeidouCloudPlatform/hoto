@@ -8,4 +8,6 @@ def create_app(config='Hoto.config.Config'):
     with app.app_context():
         app.config.from_object(config)
 
+        from Hoto.test import test
+        app.register_blueprint(test)
         return app

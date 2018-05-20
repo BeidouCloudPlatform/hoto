@@ -1,0 +1,108 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hoto
+  annotations:
+    cloud.spanda.io/version: v0.1.0-master-3.f12e602
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hoto-spanda
+  labels:
+    name: hoto-spanda
+    namespace: hoto
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: hoto-spanda
+  labels:
+    name: hoto-spanda
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+        - '*'
+  - nonResourceURLs:
+      - '*'
+    verbs:
+      - '*'
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: hoto-spanda
+  labels:
+    name: hoto-spanda
+roleRef:
+  kind: ClusterRole
+  name: hoto-spanda
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: hoto-spanda
+    namespace: hoto
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: hoto-app
+  labels:
+    name: hoto-app
+    app: hoto-spanda
+  namespace: hoto
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  template:
+    metadata:
+      labels:
+        name: hoto-app
+        app: hoto-spanda
+    spec:
+      containers:
+        - name: app
+          env: []
+          image: 'spanda/hoto'
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4000
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hoto-app
+  labels:
+    name: hoto-app
+    app: hoto-spanda
+    namespace: hoto
+spec:
+  ports:
+    - name: app
+      port: 4000
+      protocol: TCP
+      targetPort: 4000
+  selector:
+      name: hoto-app
+      app: hoto-spanda
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: hoto-k8s-traefik
+  namespace: hoto
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: hoto.k8s.traefik
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: hoto-app
+          servicePort: 4000
